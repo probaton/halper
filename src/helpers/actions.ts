@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export function getActions(): HalpAction[] {
+export function getActions(): IHalper[] {
   const filePaths: string[] = [];
 
   function processDir(path) {
@@ -19,7 +19,7 @@ export function getActions(): HalpAction[] {
   return filePaths.map(path => require(path).default);
 }
 
-export function getArgValue(flag: HalpArgFlag, indexedOptions: Array<string | number>, labeledOptions: Record<string, string | boolean>): any {
+export function getArgValue(flag: IHalpArgFlag, indexedOptions: Array<string | number>, labeledOptions: Record<string, string | boolean>): any {
   if (typeof flag === 'number') {
     return indexedOptions[flag];
   }

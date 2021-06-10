@@ -1,16 +1,16 @@
-interface HalpAction {
+interface IHalper {
   command: string;
   helpText?: string;
   function: (...args: any[]) => any;
   spinnerText?: string;
-  args?: HalpArg[];
+  args?: IHalpArg[];
 }
 
-interface HalpArg {
-  flag: HalpArgFlag;
+interface IHalpArg {
+  flag: IHalpArgFlag;
   helpText?: string;
   default?: any;
   requiredMessage?: string;
 }
 
-type HalpArgFlag = number | string | string[];
+type IHalpArgFlag = number | string | string[];

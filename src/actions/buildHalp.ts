@@ -5,7 +5,7 @@ async function buildHalp() {
   return 'Build successful';
 }
 
-const halpConfig: HalpAction = {
+const halpConfig: IHalper = {
   command: 'build',
   function: buildHalp,
   helpText: 'Recompiles Halpers to process code changes.',
