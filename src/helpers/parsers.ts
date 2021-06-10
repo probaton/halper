@@ -1,4 +1,4 @@
-function parseArgText(arg: HalpArg): string {
+function parseArgText(arg: IHalpArg): string {
   let argText = typeof arg.flag == 'string' ? ` -${arg.flag}` : `  ${arg.flag}`;
   argText += arg.requiredMessage ? '*' : '';
   while (argText.length < 6) {
@@ -9,7 +9,7 @@ function parseArgText(arg: HalpArg): string {
   return argText;
 }
 
-export function parseHelpText(action: HalpAction): string {
+export function parseHelpText(action: IHalper): string {
   if (!action.helpText && !action.args) {
     return `No documentation found for <${action.command}>`;
   }
@@ -29,7 +29,7 @@ export function parseHelpText(action: HalpAction): string {
   return helpText;
 }
 
-export function enumerateCommands(actions: HalpAction[]) {
+export function enumerateCommands(actions: IHalper[]) {
   return actions
     .map(action => `\n- ${action.command}`)
     .sort()
