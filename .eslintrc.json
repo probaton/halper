@@ -1,0 +1,39 @@
+{
+  "env": {
+    "node": true
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "ignorePatterns": ["node_modules/", "dist/"],
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/type-annotation-spacing": ["warn"],
+    "array-bracket-spacing": ["warn", "never"],
+    "block-spacing": ["warn", "always"],
+    "comma-dangle": ["warn", "always-multiline"],
+    "eol-last": ["warn", "always"],
+    "func-call-spacing": ["warn", "never"],
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "key-spacing": ["warn"],
+    "no-irregular-whitespace": ["warn"],
+    "no-trailing-spaces": ["warn"],
+    "object-curly-spacing": ["warn", "always"],
+    "quotes": ["warn", "single"],
+    "semi": ["warn", "always"],
+    "space-before-blocks": ["warn"],
+    "space-infix-ops": ["warn"]
+  }
+}
