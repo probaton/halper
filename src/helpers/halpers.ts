@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export function getActions(): IHalper[] {
+export function getHalpers(): IHalper[] {
   const filePaths: string[] = [];
 
   function processDir(path) {

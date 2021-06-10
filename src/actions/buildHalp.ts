@@ -7,7 +7,7 @@ async function buildHalp() {
 
 const halpConfig: IHalper = {
   command: 'build',
-  function: buildHalp,
+  action: buildHalp,
   helpText: 'Recompiles Halpers to process code changes.',
 };
 export default halpConfig;

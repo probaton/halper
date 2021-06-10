@@ -1,7 +1,7 @@
 import ora from 'ora';
 
 import { enumerateCommands, traverseObject, parseHelpText } from './helpers/parsers';
-import { getActions, getArgValue } from './helpers/actions';
+import { getHalpers, getArgValue } from './helpers/halpers';
 
 import writeFile from './helpers/writeFile';
 
@@ -11,24 +11,24 @@ import writeFile from './helpers/writeFile';
  * E.g. halp command -o "I'm a labeled option" => { o: "I'm a labeled option" }
  */
 export default async function executeInstructions(indexedOptions: Array<string | number>, labeledOptions: Record<string, string | boolean>) {
-  const actions = getActions();
-  const action = actions.find(action => action.command == indexedOptions[0]);
+  const halpers = getHalpers();
+  const halper = halpers.find(action => action.command == indexedOptions[0]);
 
   if (!indexedOptions[0]) {
-    throw new Error(`Available halp commands are ${enumerateCommands(actions)}\n\nTry halp <command> --help for a more detailed description of a specific command.`);
+    throw new Error(`Available halp commands are ${enumerateCommands(halpers)}\n\nTry halp <command> --help for a more detailed description of a specific command.`);
   }
 
-  if (!action) {
-    throw new Error(`<${indexedOptions[0]}> is not a halp command. Available options are${enumerateCommands(actions)}\n\nFor more information on each command, try "halp <command> --help"`);
+  if (!halper) {
+    throw new Error(`<${indexedOptions[0]}> is not a halp command. Available options are${enumerateCommands(halpers)}\n\nFor more information on each command, try "halp <command> --help"`);
   }
 
   if (labeledOptions.help || labeledOptions.h) {
-    return parseHelpText(action);
+    return parseHelpText(halper);
   }
 
-  const spinner = ora({ text: action.spinnerText || 'Processing', color: 'magenta' }).start();
+  const spinner = ora({ text: halper.spinnerText || 'Processing', color: 'magenta' }).start();
 
-  const args = !action.args ? [] : action.args.map(arg => {
+  const args = !halper.args ? [] : halper.args.map(arg => {
     const value = getArgValue(arg.flag, indexedOptions, labeledOptions);
     if (!value && arg.requiredMessage) {
       spinner.stop();
@@ -38,7 +38,7 @@ export default async function executeInstructions(indexedOptions: Array<string |
   });
 
   try {
-    let output = await action.function(...args);
+    let output = await halper.action(...args);
 
     if (labeledOptions.traverse) {
       if (typeof labeledOptions.traverse != 'string') {
@@ -52,7 +52,7 @@ export default async function executeInstructions(indexedOptions: Array<string |
     }
 
     if (labeledOptions.w) {
-      const fileName = typeof labeledOptions.w == 'string' ? labeledOptions.w : `${action.command}.txt`;
+      const fileName = typeof labeledOptions.w == 'string' ? labeledOptions.w : `${halper.command}.txt`;
       return writeFile(fileName, output);
     }
 

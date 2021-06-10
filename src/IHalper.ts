@@ -1,7 +1,7 @@
 interface IHalper {
   command: string;
   helpText?: string;
-  function: (...args: any[]) => any;
+  action: (...args: any[]) => any;
   spinnerText?: string;
   args?: IHalpArg[];
 }
