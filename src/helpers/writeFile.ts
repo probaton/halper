@@ -1,9 +1,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { getRootDirectory } from './util';
 
 // Writes fileString to halpers/exports/<fileName>
 export default function writeFile(fileName: string, fileString: string) {
-  const filePath = `${__dirname}/../../../exports/`;
+  const filePath = `${getRootDirectory()}/exports`;
   !existsSync(filePath) && mkdirSync(filePath);
   writeFileSync(`${filePath}/${fileName}`, fileString);
-  return `Output saved to ${__dirname.substring(0, __dirname.length - 17)}/exports/${fileName}`;
+  return `Output saved to ${filePath}/${fileName}`;
 }
