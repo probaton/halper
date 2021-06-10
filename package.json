@@ -11,18 +11,16 @@
   "bin": {
     "halp": "./dist/src/run.js"
   },
-  "author": "",
+  "author": "Dexx van der Mandele",
   "license": "ISC",
   "dependencies": {
     "form-data": "^3.0.0",
     "got": "^11.1.4",
     "node-cache": "^5.1.2",
-    "node-forge": "^0.10.0",
     "ora": "^4.0.4",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "@types/node-forge": "^0.9.6",
     "@types/yargs": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^4.11.1",
     "@typescript-eslint/parser": "^4.11.1",
