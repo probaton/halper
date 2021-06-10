@@ -1,11 +1,11 @@
 {
   "name": "halpers",
   "version": "1.0.0",
-  "description": "",
+  "description": "A command line interface for TypeScript.",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "build": "rm -rf dist/configs/* && tsc && chmod 777 ./dist/src/run.js"
+    "build": "rm -rf dist && tsc && chmod 777 ./dist/src/run.js"
   },
   "preferGlobal": true,
   "bin": {
