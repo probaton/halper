@@ -1,77 +1,55 @@
-import got, { Options, HTTPError } from 'got';
-import FormData from 'form-data';
+import axios, { AxiosRequestConfig } from 'axios';
 
-function handleError(e: Error, options: CallOptions) {
-  const errorMessage = options.errorMessage || 'Request failed';
-  if (!(e instanceof HTTPError)) {
-    throw new Error(`${errorMessage}:\n${e}`);
-  }
+export async function call(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'HEAD' | 'DELETE' | 'OPTIONS' | 'TRACE', url: string, callOptions?: ICallOptions) {
+  const baseOptions = {
+    method,
+    url,
+    headers: { Accept: 'application/json' },
+    errorMessage: 'Request failed',
+  };
+  const options = Object.assign(baseOptions, callOptions);
 
-  const { statusCode, statusMessage, body } = e.response;
-
-  // Prevent got from overzealously throwing errors on requests that are not actually broken.
-  if (statusCode >= 200 && statusCode < 300) {
-    return e.response;
-  }
-
-  if (options.returnRawError) {
-    return { statusCode, statusMessage, body };
-  }
-
-  let errorDetails: string;
-  try {
-    errorDetails = JSON.parse(body as any).message;
-  } catch (e) {
-    errorDetails = statusMessage || 'Unknown error';
-  }
-  throw new Error(`${errorMessage}\n${statusCode}: ${errorDetails}`);
-}
-
-async function call(callFunction, url: string, options: CallOptions) {
-  const fullOptions = Object.assign({}, {
-    https: { rejectUnauthorized: false },
-    allowGetBody: true,
-  }, options);
-
-  if (fullOptions.formData) {
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(fullOptions.formData)) {
-      formData.append(key, value);
+  if (options.form) {
+    const form = new URLSearchParams();
+    for (const [key, value] of Object.entries(options.form)) {
+      form.append(key, value as string);
     }
-    fullOptions.body = formData;
+    options.data = form.toString();
   }
 
-  let response;
   try {
-    response = await callFunction(url, fullOptions);
-    if (fullOptions.returnRawError) {
-      console.warn('\nreturnRawError == true but the call did not error');
+    const response = await axios(options);
+    return options.verbose ? response : (response.data || response);
+  } catch (e: any) {
+    if (options.verbose) {
+      throw e;
     }
-  } catch (e) {
-    response = handleError(e, fullOptions);
+    if (e.isAxiosError && e.response) {
+      const errorBody = e.response.data?.message || JSON.stringify(e.response.data, undefined, 2) || e.response.statusText;
+      throw new Error(`${options.errorMessage}\n${e.response.status}: ${errorBody}`);
+    }
+    throw new Error(`${options.errorMessage}\n${e}`);
   }
-
-  try {
-    return JSON.parse(response.body);
-  // eslint-disable-next-line
-  } catch (e) {}
-  return response.body || response;
 }
 
-export async function get(url: string, options: CallOptions) {
-  return call(got, url, options);
+export async function get(url: string, options?: ICallOptions) {
+  return call('GET', url, options);
 }
 
-export async function post(url: string, options: CallOptions) {
-  return call(got.post, url, options);
+export async function post(url: string, options?: ICallOptions) {
+  return call('POST', url, options);
 }
 
-export async function deleteCall(url: string, options: CallOptions) {
-  return call(got.delete, url, options);
+export async function put(url: string, options?: ICallOptions) {
+  return call('PUT', url, options);
 }
 
-export interface CallOptions extends Options {
+export async function deleteCall(url: string, options?: ICallOptions) {
+  return call('DELETE', url, options);
+}
+
+export interface ICallOptions extends AxiosRequestConfig {
   errorMessage?: string,
-  formData?: Record<string, any>,
-  returnRawError?: boolean,
+  form?: Record<string, any>,
+  verbose?: boolean,
 }

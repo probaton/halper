@@ -4,6 +4,7 @@
   "description": "A command line interface for TypeScript.",
   "main": "index.js",
   "scripts": {
+    "halp": "ts-node src/run",
     "lint": "eslint .",
     "build": "rm -rf dist && tsc && chmod 777 ./dist/src/run.js"
   },
@@ -14,13 +15,14 @@
   "author": "Dexx van der Mandele",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "form-data": "^3.0.0",
-    "got": "^11.1.4",
     "node-cache": "^5.1.2",
     "ora": "^4.0.4",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
+    "@types/node": "^16.11.6",
     "@types/yargs": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^4.11.1",
     "@typescript-eslint/parser": "^4.11.1",
