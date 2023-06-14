@@ -14,3 +14,5 @@ interface IHalpArg {
 }
 
 type IHalpArgFlag = number | string | string[];
+
+type IHalpConfig = Record<string, any>;

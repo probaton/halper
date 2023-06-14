@@ -9,15 +9,13 @@ export function generateRandomNumber(numberOfDigits = 6) {
 }
 
 export function generateEmail() {
-  return `randocalrissian${new Date().toISOString().replace(/:/g, '.')}@edify.com`;
+  return `randocalrissian${new Date().toISOString().replace(/:/g, '.')}@example.com`;
 }
 
 export function getRootDirectory() {
   const path = require.main!.path;
-  if (path.indexOf('/dist/src') == path.length - 9) {
-    return path.substring(0, path.length - 9);
-  }
-  return path.substring(0, path.length - 4);
+  const charsToSliceOffTheEnd = (path.indexOf('/dist/src') == path.length - 9) ? -9 : -4;
+  return path.slice(0, charsToSliceOffTheEnd);
 }
 
 export function executeShellCommand(command: string): Promise<string> {
