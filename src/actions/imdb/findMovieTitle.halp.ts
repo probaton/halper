@@ -17,7 +17,7 @@ async function findMovieTitle(query: string) {
   }, '');
 }
 
-const halpConfig = {
+const halpConfig: IHalper = {
   command: 'find-movie',
   action: findMovieTitle,
   helpText: 'Searches IMDB for movie titles containing the search term',
