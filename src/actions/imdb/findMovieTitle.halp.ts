@@ -21,7 +21,7 @@ async function findMovieTitle(query: string) {
   return movies.results.reduce((aggregate, movie) => `${aggregate}\n[${movie.id}]${fillerSpaces(maxIdLength - movie.id.length)} ${movie.title} - ${movie.description}`, '');
 }
 
-const halpConfig = {
+const halpConfig: IHalper = {
   command: 'find-movie',
   action: findMovieTitle,
   helpText: 'Searches IMDB for movie titles containing the search term',
