@@ -1,4 +1,5 @@
 import { exec } from 'child_process';
+import { promises as fs } from 'fs';
 
 export function generateRandomNumber(numberOfDigits = 6) {
   let factor = 1;
@@ -16,6 +17,15 @@ export function getRootDirectory() {
   const path = require.main!.path;
   const charsToSliceOffTheEnd = (path.indexOf('/dist/src') == path.length - 9) ? -9 : -4;
   return path.slice(0, charsToSliceOffTheEnd);
+}
+
+export async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    return await (fs.access(filePath)) === undefined;
+  } catch (e: any) {
+    if (e.code === 'ENOENT') return false;
+    throw e;
+  }
 }
 
 export function executeShellCommand(command: string): Promise<string> {
