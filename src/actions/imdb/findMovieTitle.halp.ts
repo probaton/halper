@@ -7,19 +7,14 @@ export function callMovieTitle(query: string) {
   return get(url, { errorMessage: 'Movie search failed' });
 }
 
-function fillerSpaces(nrOfSpaces: number) {
-  let spaces = '';
-  for (let spacesToGo = nrOfSpaces; spacesToGo > 0; spacesToGo--) {
-    spaces += ' ';
-  }
-  return spaces;
-}
-
 async function findMovieTitle(query: string) {
-  const movies = await callMovieTitle(query);
-  let maxIdLength = 0;
-  movies.results.forEach(movie => maxIdLength = (movie.id.length > maxIdLength) ? movie.id.length : maxIdLength);
-  return movies.results.reduce((aggregate, movie) => `${aggregate}\n[${movie.id}]${fillerSpaces(maxIdLength - movie.id.length)} ${movie.title} - ${movie.description}`, '');
+  const { results } = await callMovieTitle(query);
+  const maxIdLength = results.reduce((maxIdLength, { id }) => id.length > maxIdLength ? id.length : maxIdLength, 0);
+  return results.reduce((aggregate, movie) => {
+    const padding = ' '.repeat(maxIdLength - movie.id.length);
+    const summary = `${movie.title} - ${movie.description}`;
+    return `${aggregate}\n[${movie.id}]${padding} ${summary}`;
+  }, '');
 }
 
 const halpConfig = {
