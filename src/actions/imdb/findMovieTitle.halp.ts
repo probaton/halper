@@ -1,7 +1,8 @@
 import { get } from '../../calls';
-import apiKey from '../../../secret/imdbApiKey';
+import { parseSecretFile } from '../../helpers/util';
 
 export function callMovieTitle(query: string) {
+  const apiKey = parseSecretFile('imdbApiKey.js');
   const url = `https://imdb-api.com/en/API/SearchTitle/${apiKey}/${query}`;
   return get(url, { errorMessage: 'Movie search failed' });
 }
