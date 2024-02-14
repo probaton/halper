@@ -8,10 +8,6 @@ export function generateRandomNumber(numberOfDigits = 6) {
   return Math.floor(factor + Math.random() * (9 * factor));
 }
 
-export function generateEmail() {
-  return `randocalrissian${new Date().toISOString().replace(/:/g, '.')}@example.com`;
-}
-
 export function getRootDirectory() {
   const path = require.main!.path;
   const charsToSliceOffTheEnd = (path.indexOf('/dist/src') == path.length - 9) ? -9 : -4;
@@ -27,4 +23,19 @@ export function executeShellCommand(command: string): Promise<string> {
       resolve(stderr || stdout);
     });
   });
+}
+
+// Parses and returns the contents of the designated file in the root level secret folder
+export function parseSecretFile(fileName: string): Promise<any> {
+  try {
+    return require(`${getRootDirectory()}/secret/${fileName}`);
+  } catch (e: any) {
+    if (e?.code === 'MODULE_NOT_FOUND') {
+      throw new Error(`Required file ./secret/${fileName} does not exist`);
+    } else if (e?.name === 'SyntaxError') {
+      throw new Error(`Error parsing required file ./secret/${fileName}: ${e?.message}`);
+    } else {
+      throw e;
+    }
+  }
 }
