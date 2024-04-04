@@ -1,13 +1,18 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, Method } from 'axios';
 
-export async function call(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'HEAD' | 'DELETE' | 'OPTIONS' | 'TRACE', url: string, callOptions?: ICallOptions) {
-  const baseOptions = {
+export async function call(method: Method, url: string, callOptions?: ICallOptions) {
+  const baseHeaders = { Accept: 'application/json' };
+  const headers = callOptions?.headers
+    ? { ...baseHeaders, ...callOptions.headers }
+    : baseHeaders;
+
+  const options = {
     method,
     url,
-    headers: { Accept: 'application/json' },
+    headers,
     errorMessage: 'Request failed',
+    ...callOptions,
   };
-  const options = Object.assign(baseOptions, callOptions);
 
   if (options.form) {
     const form = new URLSearchParams();
