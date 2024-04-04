@@ -2,7 +2,7 @@ import NodeCache from 'node-cache';
 
 const cache = new NodeCache();
 
-export default class ValueCache<T> {
+export default class SoftCache<T> {
   private cache = cache;
   private cacheKey: string;
 

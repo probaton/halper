@@ -1,6 +1,6 @@
-import ValueCache from './ValueCache';
+import SoftCache from './SoftCache';
 
-export default class ConfigCache extends ValueCache<IHalpConfig> {
+export default class ConfigCache extends SoftCache<IHalpConfig> {
   constructor() {
     super('config');
   }
