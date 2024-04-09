@@ -1,6 +1,10 @@
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
 export async function call(method: Method, url: string, callOptions?: ICallOptions) {
+  if (callOptions?.logUrl) {
+    console.log('\nCall URL:', url, '\n');
+  }
+
   const baseHeaders = { Accept: 'application/json' };
   const headers = callOptions?.headers
     ? { ...baseHeaders, ...callOptions.headers }
@@ -56,5 +60,6 @@ export async function deleteCall(url: string, options?: ICallOptions) {
 export interface ICallOptions extends AxiosRequestConfig {
   errorMessage?: string,
   form?: Record<string, any>,
+  logUrl?: boolean,
   verbose?: boolean,
 }
