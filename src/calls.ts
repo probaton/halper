@@ -28,13 +28,17 @@ export async function call(method: Method, url: string, callOptions?: ICallOptio
 
   try {
     const response = await axios(options);
-    return options.verbose ? response : (response.data || response);
+    return options.verbose
+      ? response
+      : response.data || `Status ${response.status}: ${response.statusText}` || response;
   } catch (e: any) {
     if (options.verbose) {
       throw e;
     }
     if (e.isAxiosError && e.response) {
-      const errorBody = e.response.data?.message || JSON.stringify(e.response.data, undefined, 2) || e.response.statusText;
+      const errorBody = e.response.data?.message
+        || JSON.stringify(e.response.data, undefined, 2)
+        || e.response.statusText;
       throw new Error(`${options.errorMessage}\n${e.response.status}: ${errorBody}`);
     }
     throw new Error(`${options.errorMessage}\n${e}`);
