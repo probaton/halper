@@ -33,7 +33,7 @@ export async function call(method: Method, url: string, callOptions?: ICallOptio
       : response.data || `Status ${response.status}: ${response.statusText}` || response;
   } catch (e: any) {
     if (options.verbose) {
-      throw e;
+      return e;
     }
     if (e.isAxiosError && e.response) {
       const errorBody = e.response.data?.message
