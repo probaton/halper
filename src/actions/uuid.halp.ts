@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 
-export async function generateUuids(numberOfUuids?: number, returnAsString?: boolean) {
+export function generateUuids(numberOfUuids?: number, returnAsString?: boolean) {
   if (!numberOfUuids || numberOfUuids === 1) {
     return randomUUID();
   }
