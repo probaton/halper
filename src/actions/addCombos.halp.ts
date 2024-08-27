@@ -1,65 +1,56 @@
-export function addCombos(total: number, addendCount: number) {
-  if (addendCount > 9) {
-    return 'Max number of addends is 9';
+export function addCombos(total: number, addendCount: number, excludedDigitString?: string) {
+  if (addendCount > 9) return 'Max number of addends is 9';
+  if (addendCount < 2) return 'No one is that bad at counting';
+
+  const excludedDigits = parseExcludedDigits(excludedDigitString);
+
+  const initialDigits: number[] = [];
+  for (let i = 0; i < addendCount; i++) {
+    initialDigits.push(i + 1);
   }
 
-  let highestChecked: number[] | undefined = [];
-  for (let i = 1; i <= addendCount; i++) {
-    highestChecked.push(i);
-  }
+  const lowest = arrayToNr(initialDigits);
+  const highest = arrayToNr(initialDigits.map(d => d + (9 - addendCount)));
 
-  if (addArray(highestChecked) > total) {
-    return parseNoCombosMessage(total, addendCount);
-  }
+  const combos: Set<number> = new Set();
+  for (let num = lowest; num <= highest; num++) {
+    const digits: number[] = num.toString().split('').map(d => parseInt(d)).sort();
+    const digitTotal = digits.reduce((sum, digit) => sum + digit, 0);
+    if (digitTotal !== total) continue;
 
-  const combos: number[][] = [];
-  let current: number[] | undefined = highestChecked;
-  while (current && highestChecked) {
-    if (addArray(current) === total) {
-      combos.push(current);
-      highestChecked = highestChecked && incrementAllAddends(highestChecked);
-      current = highestChecked;
-      continue;
+    let containsInvalidDigit = false;
+    for (let i = 0; i < digits.length; i++) {
+      containsInvalidDigit = excludedDigits.has(digits[i]) || (digits[i + 1] <= digits[i]);
+      if (containsInvalidDigit) break;
     }
 
-    current = incrementAddends(current);
-
-    if (!current) {
-      highestChecked = highestChecked && incrementAllAddends(highestChecked);
-      current = highestChecked;
+    if (!containsInvalidDigit) {
+      combos.add(arrayToNr(digits));
     }
   }
 
-  return combos.length > 0
-    ? combos.reduce((comboList, combo) => `${comboList}${combo}\n`, '')
-    : parseNoCombosMessage(total, addendCount);
+  return combos.size === 0
+    ? `No combination of ${addendCount} digits (excluding ${Array.from(excludedDigits)}) add up to ${total}`
+    : Array.from(combos).reduce((result, num) => `${result}${num.toString().split('').join(', ')}\n`, '').trim();
 }
 
-function incrementAddends(previousAddends: number[]): number[] | undefined {
-  const addends = [...previousAddends];
-  for (let i = addends.length - 1; i >= 1; i--) {
-    const isNotLastAddendAndCanIncrement = addends[i + 1] && addends[i] + 1 < addends[i + 1];
-    const isLastAddendAndCanIncrement = !addends[i + 1] && addends[i] < 9;
-    if (isNotLastAddendAndCanIncrement || isLastAddendAndCanIncrement) {
-      addends[i]++;
-      return addends;
+function parseExcludedDigits(excludedDigitString?: string): Set<number> {
+  const result: Set<number> = new Set([0]);
+  if (!excludedDigitString) return result;
+
+  const digitStrings = excludedDigitString.toString().split(',');
+  for (const digitString of digitStrings) {
+    const digit = parseInt(digitString);
+    if (digitString.length !== 1 || isNaN(digit)) {
+      throw new Error(`Invalid digit ${digitString} found in excluded digit list`);
     }
+    result.add(digit);
   }
+  return result;
 }
 
-function incrementAllAddends(previousAddends: number[]): number[] | undefined {
-  const addends = [...previousAddends];
-  if (addends[addends.length - 1] < 9) {
-    return addends.map(x => x + 1);
-  }
-}
-
-function addArray(addends: number[]): number {
-  return addends.reduce((sum, addend) => sum + addend);
-}
-
-function parseNoCombosMessage(total: number, addendCount: number) {
-  return `No combination of ${addendCount} numbers add up to ${total}`;
+function arrayToNr(array: number[]): number {
+  return parseInt(array.join(''));
 }
 
 const halpConfig = {
@@ -70,6 +61,7 @@ const halpConfig = {
   args: [
     { flag: 1, helpText: 'The total sum to add up to', requiredMessage: 'Total sum required' },
     { flag: 2, helpText: 'The number of addends that should add up to the total', requiredMessage: 'Number of addends required' },
+    { flag: 'x', helpText: 'Comma-separated list of digits to exclude' },
   ],
 };
 export default halpConfig;
