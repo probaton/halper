@@ -60,7 +60,7 @@ export function traverseObject(query: string, object: Record<string, any>) {
     if (subProp == undefined) {
       const altProps = Object.keys(currentProp);
       const errorMessage = typeof currentProp == 'object' && currentProp != null
-        ? `${propsSoFar} has no property ${propString}\nAvailable alternatives:\n- ${altProps.reduce((aggregate, alt) => `${aggregate}\n- ${alt}`)}`
+        ? `${propsSoFar} has no property ${propString}\nAvailable alternatives:\n- ${altProps.reduce((aggregate, alt) => `${aggregate}\n- ${alt}`, '')}`
         : `${propsSoFar} is not an object\n${propsSoFar} type: ${typeof currentProp}\n${propsSoFar} value: ${currentProp}`;
       throw new Error(errorMessage);
     }
