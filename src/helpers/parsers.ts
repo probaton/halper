@@ -69,3 +69,12 @@ export function traverseObject(query: string, object: Record<string, any>) {
   }
   return currentProp;
 }
+
+export function parseQueryString(params: Record<string, any>): string {
+  const paramStrings = Object.entries(params)
+    .filter(([_key, value]) => value !== undefined && value !== null)
+    .map(([key, value]) => `${key}=${value}`);
+  return paramStrings.length > 0
+    ? `?${paramStrings.join('&')}`
+    : '';
+}
