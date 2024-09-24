@@ -24,7 +24,7 @@ function resolveEnvConfig(): IHalpConfig {
   }
 }
 
-type Env = 'int' | 'dev' | 'local'; 
+export type Env = 'int' | 'dev' | 'local'; 
 
 export function getEnv(): Env {
   switch(yargs.argv.e as string || 'dev') {
