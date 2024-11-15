@@ -1,10 +1,12 @@
-type SudoType = 'combos' | 'add';
+type SudoType = 'combos' | 'c' | 'add' | 'a';
 const validOptionString = 'valid options are combos and add';
 
 function sudo(type: SudoType, first?: string, second?: number, third?: string) {
   switch (type) {
-    case 'combos': return combos(first, second, third);
+    case 'a':
     case 'add': return add(first);
+    case 'c':
+    case 'combos': return combos(first, second, third);
     default: return `Invalid type ${type}; ${validOptionString}`;
   }
 }
