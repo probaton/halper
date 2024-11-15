@@ -7,5 +7,5 @@ export default function writeFile(fileName: string, fileString: string) {
   const filePath = `${getRootDirectory()}/exports`;
   !existsSync(filePath) && mkdirSync(filePath);
   writeFileSync(`${filePath}/${fileName}`, JSON.stringify(fileString, undefined, 2));
-  return `Output saved to ${filePath}/${fileName}`;
+  return `Output saved to\n${filePath}/${fileName}`;
 }
