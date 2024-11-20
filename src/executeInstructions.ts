@@ -30,11 +30,11 @@ export default async function executeInstructions(indexedOptions: Array<string |
 
   const args = !halper.args ? [] : halper.args.map(arg => {
     const value = getArgValue(arg.flag, indexedOptions, labeledOptions);
-    if (!value && arg.requiredMessage) {
+    if (!value == undefined && arg.requiredMessage) {
       spinner.stop();
       throw new Error(arg.requiredMessage);
     }
-    return value || arg.default;
+    return value == undefined && arg.default ? arg.default : value;
   });
 
   try {
@@ -51,8 +51,9 @@ export default async function executeInstructions(indexedOptions: Array<string |
       output = JSON.stringify(output, undefined, 2);
     }
 
-    if (labeledOptions.w) {
-      const fileName = typeof labeledOptions.w == 'string' ? labeledOptions.w : `${halper.command}.txt`;
+    const shouldWrite = labeledOptions.w || labeledOptions.write;
+    if (shouldWrite) {
+      const fileName = typeof shouldWrite == 'string' ? shouldWrite : `${halper.command}.txt`;
       return writeFile(fileName, output);
     }
 
