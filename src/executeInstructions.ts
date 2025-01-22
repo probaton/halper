@@ -30,7 +30,7 @@ export default async function executeInstructions(indexedOptions: Array<string |
 
   const args = !halper.args ? [] : halper.args.map(arg => {
     const value = getArgValue(arg.flag, indexedOptions, labeledOptions);
-    if (!value == undefined && arg.requiredMessage) {
+    if (value == undefined && arg.requiredMessage) {
       spinner.stop();
       throw new Error(arg.requiredMessage);
     }
