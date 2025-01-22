@@ -49,3 +49,11 @@ export function parseSecretFile(fileName: string): Promise<any> {
     }
   }
 }
+
+export function isJson(input: any): boolean {
+  try {
+    return typeof input == 'object' && !!(JSON.parse(JSON.stringify(input)));
+  } catch (_) {
+    return false;
+  }
+}

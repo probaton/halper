@@ -4,6 +4,7 @@ import { enumerateCommands, traverseObject, parseHelpText } from './helpers/pars
 import { getHalpers, getArgValue } from './helpers/halpers';
 
 import writeFile from './helpers/writeFile';
+import { isJson } from './helpers/util';
 
 /* @indexedOptions is an ordered array of all unmarked options passed to halp, the first of which is the command itself
  * E.g. halp first-indexed-option "Second indexed option'" => [ "first-indexed-option", "Second indexed option ]
@@ -53,7 +54,9 @@ export default async function executeInstructions(indexedOptions: Array<string |
 
     const shouldWrite = labeledOptions.w || labeledOptions.write;
     if (shouldWrite) {
-      const fileName = typeof shouldWrite == 'string' ? shouldWrite : `${halper.command}.txt`;
+      const fileName = typeof shouldWrite == 'string'
+        ? shouldWrite
+        : `${halper.command}.${isJson(output) ? 'json' : 'txt'}`;
       return writeFile(fileName, output);
     }
 
