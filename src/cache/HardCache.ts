@@ -1,6 +1,7 @@
 import { access, mkdir, readFile, writeFile } from 'fs/promises';
 
 import { getRootDirectory } from '../helpers/util';
+import { getEnv } from '../helpers/getConfig';
 
 // Returns the read cache file from halpers/hardCache/<cacheName> if it exists or undefined if it does not
 async function get(cacheName: string): Promise<string | undefined> {
@@ -25,12 +26,23 @@ async function set(cacheName: string, toCache: string): Promise<string> {
 }
 
 /*
- *Overwrites/creates the current cache matching <cacheName> if a value is provided, then returns <value>
+ * Overwrites/creates the current cache matching <cacheName> if a value is provided, then returns <value>
  * Returns the current cache if <value> is undefined and a preexisting cache matching <cacheName> is found
  * Returns undefined if no value is provided and no cache matching <cacheName> is found
  */
-export default function getHardCached(cacheName: string, value?: string): Promise<string | undefined> {
-  return value
-    ? set(cacheName, value)
-    : get(cacheName);
+export async function getHardCached(cacheName: string, value?: string): Promise<string | undefined> {
+  if (value) {
+    return set(cacheName, value);
+  }
+
+  const cachedValue = await get(cacheName);
+  if (!cachedValue) {
+    throw new Error(`No value was provided for ${cacheName} and none was cached`);
+  }
+
+  return cachedValue;
+}
+
+export function getHardCachedEnv(cacheName: string, value?: string): Promise<string | undefined> {
+  return getHardCached(`${getEnv()}-${cacheName}`, value);
 }
