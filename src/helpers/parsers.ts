@@ -20,7 +20,7 @@ function parseArgsText(args?: IHalpArg[]): string {
     maxLength = Math.max(maxLength, flagText.length);
     flagTexts.push(flagText);
   }
-      
+
   if (hasRequiredArgs) {
     argsText += 'Options marked * are required\n';
   }
@@ -70,10 +70,15 @@ export function traverseObject(query: string, object: Record<string, any>) {
   return currentProp;
 }
 
-export function parseQueryString(params: Record<string, any>): string {
+interface QueryStringOptions {
+  splitArrays?: boolean; // Splits each item in array values into a new param with the same key
+}
+
+export function parseQueryString(params: Record<string, any>, options?: QueryStringOptions): string {
   const paramStrings = Object.entries(params)
     .filter(([_key, value]) => value !== undefined && value !== null)
-    .map(([key, value]) => `${key}=${value}`);
+    .map(([key, value]) => options?.splitArrays && Array.isArray(value) ? value.map(a => `${key}=${a}`) : `${key}=${value}`)
+    .flat();
   return paramStrings.length > 0
     ? `?${paramStrings.join('&')}`
     : '';
