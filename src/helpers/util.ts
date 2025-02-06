@@ -57,3 +57,12 @@ export function isJson(input: any): boolean {
     return false;
   }
 }
+
+export function chunk<T>(array: T[], chunkSize: number): T[][] {
+  return array.reduce((a: T[][], _, i) => {
+    if (i % chunkSize == 0) {
+      a.push(array.slice(i, i + chunkSize));
+    }
+    return a;
+  }, []);
+}
