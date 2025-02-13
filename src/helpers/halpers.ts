@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { ParsedArgs } from '../pargs';
 
 export function getHalpers(): IHalper[] {
   const filePaths: string[] = [];
@@ -26,15 +27,15 @@ export function getHalpers(): IHalper[] {
   return halpers;
 }
 
-export function getArgValue(flag: IHalpArgFlag, indexedOptions: Array<string | number>, labeledOptions: Record<string, string | boolean>): any {
+export function getArgValue(flag: IHalpArgFlag, pargs: ParsedArgs): any {
   if (typeof flag === 'number') {
-    return indexedOptions[flag];
+    return pargs.indexed[flag - 1];
   }
   if (typeof flag === 'string') {
-    return labeledOptions[flag];
+    return pargs.labeled[flag];
   }
   if (Array.isArray(flag)) {
-    const flagValues = flag.map(flag => labeledOptions[flag]);
+    const flagValues = flag.map(flag => pargs.labeled[flag]);
     return flagValues.find(value => value !== undefined);
   }
   throw new Error('Invalid flag type');

@@ -1,4 +1,3 @@
-import yargs from 'yargs';
 import ConfigCache from '../cache/ConfigCache';
 
 export default function getConfig(): IHalpConfig {
@@ -27,7 +26,7 @@ function resolveEnvConfig(): IHalpConfig {
 export type Env = 'int' | 'dev' | 'local'; 
 
 export function getEnv(): Env {
-  switch(yargs.argv.e as string || 'dev') {
+  switch(halpMan.pargs.labeled.e as string || 'dev') {
     case 'i':
     case 'int':
       return 'int';
