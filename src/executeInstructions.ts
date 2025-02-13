@@ -1,4 +1,3 @@
-import ora from 'ora';
 
 import { enumerateCommands, traverseObject, parseHelpText } from './helpers/parsers';
 import { getHalpers, getArgValue } from './helpers/halpers';
@@ -25,14 +24,14 @@ export default async function executeInstructions(cliArgs: string[]) {
     return parseHelpText(halper);
   }
 
-  initiateHalpManager(pargs);
+  initiateHalpManager(halper, pargs);
 
-  const spinner = ora({ text: halper.spinnerText || 'Processing', color: 'magenta' }).start();
+  halpMan.spinner.start();
 
   const args = !halper.args ? [] : halper.args.map(arg => {
     const value = getArgValue(arg.flag, pargs);
     if (value == undefined && arg.requiredMessage) {
-      spinner.stop();
+      halpMan.spinner.stop();
       throw new Error(arg.requiredMessage);
     }
     return value == undefined && arg.default ? arg.default : value;
@@ -62,6 +61,6 @@ export default async function executeInstructions(cliArgs: string[]) {
 
     return output;
   } finally {
-    spinner.stop();
+    halpMan.spinner.stop();
   }
 }
