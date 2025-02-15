@@ -66,3 +66,5 @@ export function chunk<T>(array: T[], chunkSize: number): T[][] {
     return a;
   }, []);
 }
+
+export const timer = ms => new Promise(res => setTimeout(res, ms));
