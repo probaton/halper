@@ -28,6 +28,11 @@ export default async function executeInstructions(cliArgs: string[]) {
 
   halpMan.spinner.start();
 
+  const flags = ['e', 'h', 'help', 'stringify', 'traverse', 'w', 'write', ...halper.args?.map(a => a.flag) || []];
+  Object.keys(pargs.labeled).forEach(f => {
+    if (!flags.includes(f)) halpMan.log(`Unknown flag <${f}>`);
+  });
+
   const args = !halper.args ? [] : halper.args.map(arg => {
     const value = getArgValue(arg.flag, pargs);
     if (value == undefined && arg.requiredMessage) {
