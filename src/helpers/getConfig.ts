@@ -23,10 +23,12 @@ function resolveEnvConfig(): IHalpConfig {
   }
 }
 
-export type Env = 'int' | 'dev' | 'local'; 
+export type Env = 'prod' | 'int' | 'dev' | 'local';
 
 export function getEnv(): Env {
   switch(halpMan.pargs.labeled.e as string || 'dev') {
+    case 'prod':
+      return 'prod';
     case 'i':
     case 'int':
       return 'int';
