@@ -6,8 +6,8 @@ export async function call(method: Method, url: string, callOptions?: ICallOptio
   }
 
   const baseHeaders = { Accept: 'application/json' };
-  const headers = callOptions?.headers
-    ? { ...baseHeaders, ...callOptions.headers }
+  const headers = callOptions?.additionalHeaders
+    ? { ...baseHeaders, ...callOptions.additionalHeaders }
     : baseHeaders;
 
   const options = {
@@ -19,7 +19,7 @@ export async function call(method: Method, url: string, callOptions?: ICallOptio
   };
 
   if (options.form) {
-    const form = new URLSearchParams();
+    const form = new FormData();
     for (const [key, value] of Object.entries(options.form)) {
       form.append(key, value as string);
     }
@@ -62,6 +62,7 @@ export async function deleteCall(url: string, options?: ICallOptions) {
 }
 
 export interface ICallOptions extends AxiosRequestConfig {
+  additionalHeaders?: Record<string, string>;
   errorMessage?: string,
   form?: Record<string, any>,
   logUrl?: boolean,
