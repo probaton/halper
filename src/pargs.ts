@@ -34,7 +34,7 @@ export function parseArgs(cliArgs: string[]): ParsedArgs {
 
 function parseArg(cliArg: string): [true, string] | [false, PargValue] {
   if (cliArg == 'true') return [false, true];
-  if (cliArg == 'false') return [false, true];
+  if (cliArg == 'false') return [false, false];
   if (!isNaN(cliArg as any)) return [false, parseInt(cliArg)];
   if (cliArg.startsWith('--')) return [true, cliArg.slice(2)];
   if (cliArg.startsWith('-')) return [true, cliArg.slice(1)];
