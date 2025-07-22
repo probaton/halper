@@ -19,11 +19,12 @@ export async function call(method: Method, url: string, callOptions?: ICallOptio
   };
 
   if (options.form) {
-    const form = new FormData();
-    for (const [key, value] of Object.entries(options.form)) {
-      form.append(key, value as string);
-    }
-    options.data = form.toString();
+    options.data = Object.entries(options.form)
+      .reduce((a, [key, value]) => {
+        a.append(key, value as string);
+        return a;
+      }, new FormData())
+      .toString();
   }
 
   try {
