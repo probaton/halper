@@ -36,7 +36,7 @@ export function executeShellCommand(command: string): Promise<string> {
 }
 
 // Parses and returns the contents of the designated file in the root level secret folder
-export function parseSecretFile(fileName: string): Promise<any> {
+export function parseSecretFile(fileName: string): any {
   try {
     return require(`${getRootDirectory()}/secret/${fileName}`);
   } catch (e: any) {
