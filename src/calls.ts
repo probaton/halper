@@ -1,13 +1,13 @@
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
 export async function call(method: Method, url: string, callOptions?: ICallOptions) {
-  if (callOptions?.logUrl) {
-    console.log('\nCall URL:', url, '\n');
+  if (halpMan.pargs.labeled.logUrl || halpMan.pargs.labeled['log-url'] || callOptions?.logUrl) {
+    halpMan.log('Calling:', method, url);
   }
 
   const baseHeaders = { Accept: 'application/json' };
-  const headers = callOptions?.additionalHeaders
-    ? { ...baseHeaders, ...callOptions.additionalHeaders }
+  const headers = callOptions?.headers
+    ? { ...baseHeaders, ...callOptions.headers }
     : baseHeaders;
 
   const options = {
@@ -63,7 +63,7 @@ export async function deleteCall(url: string, options?: ICallOptions) {
 }
 
 export interface ICallOptions extends AxiosRequestConfig {
-  additionalHeaders?: Record<string, string>;
+  headers?: Record<string, string>;
   errorMessage?: string,
   form?: Record<string, any>,
   logUrl?: boolean,
