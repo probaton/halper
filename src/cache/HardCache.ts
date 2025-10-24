@@ -30,7 +30,7 @@ async function set(cacheName: string, toCache: string): Promise<string> {
  * Returns the current cache if <value> is undefined and a preexisting cache matching <cacheName> is found
  * Returns undefined if no value is provided and no cache matching <cacheName> is found
  */
-export async function getHardCached(cacheName: string, value?: string): Promise<string | undefined> {
+export async function getHardCached(cacheName: string, value?: string): Promise<string> {
   if (value) {
     return set(cacheName, value);
   }
