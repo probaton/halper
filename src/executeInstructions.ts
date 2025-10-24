@@ -28,7 +28,7 @@ export default async function executeInstructions(cliArgs: string[]) {
 
   halpMan.spinner.start();
 
-  const flags = ['e', 'h', 'help', 'stringify', 'traverse', 'w', 'write', 'log-url', 'logUrl', ...halper.args?.map(a => a.flag) || []];
+  const flags = ['e', 'h', 'help', 'stringify', 'traverse', 'w', 'write', 'log-call', 'log-args', ...halper.args?.map(a => a.flag) || []];
   Object.keys(pargs.labeled).forEach(f => {
     if (!flags.includes(f)) halpMan.log(`Unknown flag <${f}>`);
   });
@@ -38,6 +38,9 @@ export default async function executeInstructions(cliArgs: string[]) {
     if (value == undefined && arg.requiredMessage) {
       halpMan.spinner.stop();
       throw new Error(arg.requiredMessage);
+    }
+    if (halpMan.pargs.labeled['log-args']) {
+      halpMan.log(`Argument <${arg.flag}> value: ${value}`);
     }
     return value == undefined && arg.default ? arg.default : value;
   });

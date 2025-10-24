@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
 export async function call(method: Method, url: string, callOptions?: ICallOptions) {
-  if (halpMan.pargs.labeled.logUrl || halpMan.pargs.labeled['log-url'] || callOptions?.logUrl) {
-    halpMan.log('Calling:', method, url);
+  if (halpMan.pargs.labeled.logCall || halpMan.pargs.labeled['log-call'] || callOptions?.logUrl) {
+    const callSummary = `Calling: ${method} ${url}${callOptions?.data ? `\nBody: ${JSON.stringify(callOptions.data, null, 2)}` : ''}`;
+    halpMan.log(callSummary);
   }
 
   const baseHeaders = { Accept: 'application/json' };
