@@ -69,6 +69,6 @@ export function chunk<T>(array: T[], chunkSize: number): T[][] {
 
 export const timer = ms => new Promise(res => setTimeout(res, ms));
 
-export function parseArrayString(input: string): string[] {
-  return input.split(',')?.map(item => item.trim()) || [];
+export function parseArrayString(input?: string): string[] {
+  return input?.split(',').map(item => item.trim()) || [];
 }
