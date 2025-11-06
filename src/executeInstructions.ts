@@ -28,7 +28,7 @@ export default async function executeInstructions(cliArgs: string[]) {
 
   halpMan.spinner.start();
 
-  const flags = ['e', 'h', 'help', 'stringify', 'traverse', 'w', 'write', 'log-call', 'log-args', ...halper.args?.map(a => a.flag) || []];
+  const flags = ['e', 'h', 'help', 'stringify', 'traverse', 'w', 'write', 'log-call', 'log-args', 'invalidate-cache', ...halper.args?.map(a => a.flag) || []];
   Object.keys(pargs.labeled).forEach(f => {
     if (!flags.includes(f)) halpMan.log(`Unknown flag <${f}>`);
   });

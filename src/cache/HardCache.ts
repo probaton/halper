@@ -5,6 +5,8 @@ import { getEnv } from '../helpers/getConfig';
 
 // Returns the read cache file from halpers/hardCache/<cacheName> if it exists or undefined if it does not
 export async function get(cacheName: string): Promise<string | undefined> {
+  if (halpMan.pargs.labeled['invalidate-cache']) return undefined;
+
   try {
     const cachedValue = await readFile(`${getRootDirectory()}/hardCache/${cacheName}`, 'utf-8');
     return JSON.parse(cachedValue);
