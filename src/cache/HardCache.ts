@@ -4,7 +4,7 @@ import { getRootDirectory } from '../helpers/util';
 import { getEnv } from '../helpers/getConfig';
 
 // Returns the read cache file from halpers/hardCache/<cacheName> if it exists or undefined if it does not
-async function get(cacheName: string): Promise<string | undefined> {
+export async function get(cacheName: string): Promise<string | undefined> {
   try {
     const cachedValue = await readFile(`${getRootDirectory()}/hardCache/${cacheName}`, 'utf-8');
     return JSON.parse(cachedValue);
@@ -14,7 +14,7 @@ async function get(cacheName: string): Promise<string | undefined> {
 }
 
 // Writes toCache to halpers/hardCache/<cacheName>
-async function set(cacheName: string, toCache: string): Promise<string> {
+export async function set(cacheName: string, toCache: string): Promise<string> {
   const filePath = `${getRootDirectory()}/hardCache`;
   try {
     await access(filePath);
