@@ -17,35 +17,75 @@ npm i -g ./                                             # Install Halpers as a g
 halp --help                                             # List all installed Halpers
 ```
 
+# System Commands
+Halpers comes with several built-in commands fundamental to its life-cycle.
+
+## `halp build`
+Convenience method that mimics `npm run build`, recompiling the project without having to navigate to the project directory. (Re)compilation is required to make new changes available whenever commands are added or updated.
+
+Note that running this command while the project contains TypeScript errors will break Halpers and consequently also break this command. To bring Halpers back online, simply fix your TypeScript errors, navigate to the Halpers project, and run `npm run build`. 
+
+## `halp link-module <full-path-to-module-directory>`
+Links commands from an external directory so that they can be used by Halpers. Useful if a set of commands is not suitable for general use, but does belong together or require a git repository. Note that the input parameter should be the _full_ (!relative) path to the module, and should point at a folder, not a specific Halper file. 
+
+As always when a new command is added, Halpers should be recompiled using `halp build` to make them available.
+
+Linked commands are git-ignored by default, which generally obfuscates them in most IDEs. This can easily be circumvented by telling your IDE to open them manually. For example, VS Code will filter out linked commands if targeted through the "Open file" key bind, but will open them just fine when running `code src/actions/modules/<module-name>/<command-name>.halp.ts` from the Halper root directory.  
+
+## `halp unlink-module <module-name>`
+Unlinks an external module linked using `halp link-module` by deleting the symlink. The project will have to be recompiled using `halp build` to remove them from use.  
+
 # Options
-## -h/--help
+In addition to any custom flags supported by individual commands, Halpers provides a number of universal convenience flags that can be applied to any command. Custom halpers should avoid implementing these flags, as inevitable conflicts will occur. 
+
+## `-h`/`--help`
 Prints a list of available actions or (more) detailed information on a command, depending on whether a command is included. Command information is derived from the `helpText` values associated with that command, as explained in [next section](#contributing).
 
-## -e
+## `-e`
 The target environment can be set with the `-e` flag. Valid options are `dev` and `local`. The default is `dev`. E.g. `halp -e local words "cookies"`. This can be useful if a command can be run in different contexts that require a different set of configuration parameters. Configs can be added and edited under `configs/`.
 
-## -w
+## `-w`/`--write`
 Running a command with `-w` will write the command output to a file instead of printing it in the console. The flag can either be empty (i.e. `true`), in which case the output will be saved to `exports/<command>.txt`, or you can specify a file name. For example, `-w output.csv` saves the output to `exports/output.csv`.  
 
-## --stringify
+## `--stringify`
 Passing `--stringify` will attempt to convert the output of the `halp` command to plain text. Use this to expand `Object` or `Array` items that are automatically truncated by NodeJS. 
 
-## --traverse
+## `--traverse`
 If the output of the chosen command is a valid JSON object, the string passed to this flag will be applied to the object as if it were invoked in code. The flag accepts both indices and direct property invocations, as well as chaining. 
 
 ### Example
 ```
-// Command without traversal
+// Command output without traversal
 halp example-command
 {
   arrayProp: [{ subObjectProp: 'Hello!' }]
 }
 
-// Command with traversal
+// Command output with traversal
 halp example-command --traverse "arrayProp[0].subObjectProp"
 Hello!
 ```
 
+## `--log-call`
+Logs the method, URL, and body of any requests made using the `calls` utility.
+
+## `--log-arg`
+Logs all command line arguments and how they were mapped by Halpers. Useful for debugging scenarios where Halpers seems to be assigning incorrect values to input parameters.
+
+## `--invalidate-cache`
+Halpers has a simple built-in caching system that saves values to a file in the `hardCache` folder. Passing `--invalidate-cache` tells Halpers to ignore values cached in this manner.
+
+# `halpMan`, the Global Halpers Manager
+To assist in debugging and give the user more fine-grained control, Halpers exposes several useful utilitiese through a global `halpMan` variable.
+
+## `halpMan.log()`
+Halpers' loading spinner, implemented using [ora](https://www.npmjs.com/package/ora), tends to mangle the output of `console.log()`. `halpMan.log()` implements a wrapper to circumvent this issue. Otherwise works exactly the same as `console.log()`. 
+
+## `halpMan.spinner`
+The [ora](https://www.npmjs.com/package/ora) spinner instance running throughout the command. 
+
+## `halpMan.pargs`
+Shorthand for "parsed arguments", `halpMan.pargs` gives the use access to all arguments passed into and parsed by Halpers. Arguments assigned to a flag (e.g. `-w <file-name>`/`--write <file-name>`) are assigned to `pargs.labeled[<flag>]`. Arguments without a flag are assigned to `pargs.indexed`.
 
 # Custom Halpers
 Halpers was set up to be highly extensible and additions are encouraged. Adding a new command is as easy as adding a new TS file to `src/actions/` and rebuilding the project with `npm run build`. Halpers will automatically import and execute the new command when run, provided the file exports an object that adheres to the schema below. Adding new files to `src/actions/local/` will prevent them from showing up in Git. 
@@ -73,7 +113,7 @@ Halpers was set up to be highly extensible and additions are encouraged. Adding 
 
 A full type definition of the `HalpAction` that your file should export can be found at `src/IHalper.ts`. 
 
-Command functions can be and are re-used by other commands to avoid redundancy. The only caveat is that they should be called through the `function` property as illustrated below.
+Command functions can be and are re-used by other commands to avoid redundancy. The only caveat is that they should be called through the `action` property as illustrated below.
 ```javascript
 import imdbHalper from '../imdb/findMovieTitle.halp';
 const imdbResults = await imdbHalper.action(query);
