@@ -36,14 +36,26 @@ export function executeShellCommand(command: string): Promise<string> {
 }
 
 // Parses and returns the contents of the designated file in the root level secret folder
-export function parseSecretFile(fileName: string): any {
+export async function parseSecretFile<T>(fileName: string): Promise<T> {
+  const filePath = `${getRootDirectory()}/secret/${fileName}`;
+
   try {
-    return require(`${getRootDirectory()}/secret/${fileName}`);
+    if (fileName.match(/.*\.[jt]s/)) {
+      const jsObject = require(filePath);
+      return jsObject?.default || jsObject;
+    }
+
+    const fileContent = await fs.readFile(filePath, 'utf-8');
+    if (fileName.endsWith('.json')) {
+      return JSON.parse(fileContent as any);
+    }
+
+    return fileContent as any;
   } catch (e: any) {
-    if (e?.code === 'MODULE_NOT_FOUND') {
-      throw new Error(`Required file ./secret/${fileName} does not exist`);
+    if (e?.code === 'MODULE_NOT_FOUND' || e?.code === 'ENOENT') {
+      throw new Error(`Required file ${filePath} does not exist`);
     } else if (e?.name === 'SyntaxError') {
-      throw new Error(`Error parsing required file ./secret/${fileName}: ${e?.message}`);
+      throw new Error(`Error parsing required file ${filePath}: ${e?.message}`);
     } else {
       throw e;
     }
