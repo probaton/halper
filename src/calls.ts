@@ -22,9 +22,9 @@ export async function call(method: Method, url: string, callOptions?: ICallOptio
   if (options.form) {
     options.data = Object.entries(options.form)
       .reduce((a, [key, value]) => {
-        a.append(key, value as string);
+        a.append(key, String(value));
         return a;
-      }, new FormData())
+      }, new URLSearchParams())
       .toString();
   }
 
